@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+.env
+secrets/postgres_password
+secrets/operator_token
+certs/
+backups/
+node_modules/
+apps/web/dist/
+*.egg-info/

@@ -1,0 +1,11 @@
+# TLS overlay (dev self-signed or production certs in ./certs):
+#   ./scripts/generate-dev-tls.sh
+#   docker compose -f docker-compose.yml -f docker-compose.tls.yml up --build
+
+services:
+  web:
+    volumes:
+      - ./apps/web/nginx.tls.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+    ports:
+      - "${ORDER_DESK_WEB_TLS_PORT:-5443}:443"

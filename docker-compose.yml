@@ -1,0 +1,46 @@
+services:
+  db:
+    image: postgres:16-alpine
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-orderdesk}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-orderdesk}
+      POSTGRES_DB: ${POSTGRES_DB:-orderdesk}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-orderdesk} -d ${POSTGRES_DB:-orderdesk}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - orderdesk_pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "127.0.0.1:${ORDER_DESK_API_PORT:-8082}:8000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://orderdesk:orderdesk@db:5432/orderdesk}
+      OPERATOR_TOKEN: ${OPERATOR_TOKEN:-dev-operator-token}
+      DISABLE_OPENAPI: ${DISABLE_OPENAPI:-false}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "${ORDER_DESK_WEB_PORT:-5174}:80"
+    depends_on:
+      - api
+
+volumes:
+  orderdesk_pgdata:

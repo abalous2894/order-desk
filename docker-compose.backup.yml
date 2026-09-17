@@ -1,0 +1,23 @@
+# Scheduled backup sidecar (daily pg_dump to ./backups):
+#   docker compose -f docker-compose.yml -f docker-compose.backup.yml up -d backup
+
+services:
+  backup:
+    image: postgres:16-alpine
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PGHOST: db
+      PGUSER: ${POSTGRES_USER:-orderdesk}
+      PGPASSWORD: ${POSTGRES_PASSWORD:-orderdesk}
+      PGDATABASE: ${POSTGRES_DB:-orderdesk}
+      BACKUP_INTERVAL_SECONDS: ${BACKUP_INTERVAL_SECONDS:-86400}
+    volumes:
+      - ./backups:/backups
+      - ./scripts/backup-cron.sh:/usr/local/bin/backup-cron.sh:ro
+    entrypoint: ["/bin/sh", "/usr/local/bin/backup-cron.sh"]
+    restart: unless-stopped
