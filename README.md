@@ -11,7 +11,7 @@ Order intake for dry cleaning shops: look up a customer, open a ticket, add garm
 **Requirements:** Docker and Docker Compose.
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/abalous2894/order-desk.git
 cd order-desk
 docker compose up --build
 ```
@@ -215,11 +215,13 @@ Mutating calls require `Authorization: Bearer <OPERATOR_TOKEN>` and `X-Operator-
 
 ---
 
-## Push checklist (public repo)
+## Repository
 
-Before publishing, confirm:
+**Public source:** https://github.com/abalous2894/order-desk
 
-- [ ] No `.env`, `secrets/postgres_password`, or `secrets/operator_token` committed
-- [ ] `pytest -q` and `./scripts/run-audits.sh` pass
-- [ ] README clone URL updated after remote is created
-- [ ] Default demo credentials documented (done above)
+Before pushing changes, confirm:
+
+- [x] No `.env`, `secrets/postgres_password`, or `secrets/operator_token` committed
+- [x] `pytest -q` and `./scripts/run-audits.sh` pass
+- [x] README clone URL matches the repo above
+- [x] Default demo credentials documented in **Sign in**
